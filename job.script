@@ -1,0 +1,17 @@
+#!/bin/bash
+#PBS -k o
+#PBS -l nodes=1:ppn=6,walltime=02:00:00
+#PBS -M tlai4@disroot.org
+#PBS -m ae
+#PBS -j oe
+cd /N/dc2/scratch/timlai/rna
+module load star
+
+STAR --runThreadN 6 --runMode genomeGenerate --genomeFastaFiles hg19.fa --sjdbGTFfile ucscKnownGenes.gtf --genomeDir indices
+
+files=($(ls *.fastq))
+for file in ${files[@]}
+do
+    STAR --runThreadN 6 --genomeDir indices --readFilesIn $file --outFileNamePrefix STAR/${file}_
+done
+

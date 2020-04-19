@@ -1,0 +1,8 @@
+mkdir fastqc_reports
+mkdir indices
+mkdir STAR
+
+fastqc *.fastq -t 6 -d fastqc_reports/
+qsub -l mem=48gb -l vmem=48gb job.script
+cd STAR
+find . -name "*.sam" | xargs basename -s ".fastq_Aligned.out.sam" | xargs -I{}  ../../taynick/rnaSeq/subread-2.0.0-Linux-x86_64/bin/featureCounts -T 6 -a ../ucscKnownGenes.gtf -o {}counts.txt {}.fastq_Aligned.out.sam

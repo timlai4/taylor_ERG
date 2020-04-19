@@ -1,0 +1,141 @@
+---
+title: "ERG Analysis"
+author: "Tim Lai"
+date: "4/12/2020"
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load the libraries
+```{r, message=FALSE, warning=FALSE}
+#library("Rsubread")
+library("DESeq2")
+library("apeglm")
+library("pheatmap")
+library("RColorBrewer")
+```
+At some point, we should try running subread through R. This would eliminate the intermediate step of saving the count matrix file, as we could load it directly into DESeq2.
+
+## Get counts
+```{r}
+df <- read.delim("counts.tsv", comment.char = "#")
+cts <- df[(ncol(df)-5):ncol(df)]
+rownames(cts) <- df$Geneid
+rows <- colnames(cts)
+condition <- c("Empty", "Empty", "Empty", "ERG", "ERG", "ERG")
+coldata <- data.frame(condition, row.names = rows)
+dds <- DESeqDataSetFromMatrix(countData = cts,
+                              colData = coldata,
+                              design = ~ condition)
+```
+
+## Do DGE
+```{r}
+dds <- DESeq(dds)
+res <- results(dds)
+res
+```
+
+
+## Analyze Results
+
+### Results Description
+```{r}
+mcols(res)$description
+```
+### LFC Estimates
+```{r}
+resLFC <- lfcShrink(dds, coef="condition_ERG_vs_Empty", type="apeglm")
+resLFC
+```
+
+### p-values and adjusted p-values
+```{r}
+resOrdered <- res[order(res$pvalue),]
+summary(res)
+
+```
+
+## Visualizations
+
+### MA-plot
+log2 fold changes: log(experimental) - log(control)
+
+Points will be colored red if the adjusted p value is less than 0.1. 
+Points which fall out of the window are plotted as open triangles pointing either up or down.
+
+```{r, echo=FALSE}
+plotMA(res, ylim=c(-2,2))
+
+```
+
+It is more useful visualize the MA-plot for the shrunken log2 fold changes, which remove the noise associated with log2 fold changes from low count genes without requiring arbitrary filtering thresholds.
+```{r, echo=FALSE}
+plotMA(resLFC, ylim=c(-2,2))
+```
+
+### Count Plot by Gene
+It can also be useful to examine the counts of reads for a single gene across the groups. A simple function for making this plot is plotCounts, which normalizes counts by sequencing depth and adds a pseudocount of 1/2 to allow for log scale plotting. 
+Here, the plot for the lowest p value gene is given.
+
+```{r, echo=FALSE}
+plotCounts(dds, gene=which.min(res$padj), intgroup="condition")
+```
+
+## Exporting Significant Results
+First, order our p-values by the smallest.
+```{r}
+resOrdered <- res[order(res$pvalue),]
+```
+Now, filter out by p-value threshold and log2fc and export it as CSV.
+```{r}
+resSig <- subset(resOrdered, padj < 0.05)
+resSig <- subset(resSig, abs(log2FoldChange) > 1)
+write.csv(as.data.frame(resSig), file="condition_ERG_results.csv")
+```
+## Data Quality Assessment
+
+### Count Matrix Heat Map
+I produce a heatmap from the count matrix of the top 20 most expressed genes. The intent was a QC component to make sure that within each type, "Empty" and "ERG", we see similar levels, which we do.
+
+```{r, echo=FALSE}
+ntd <- normTransform(dds)
+select <- order(rowMeans(counts(dds,normalized=TRUE)),
+                decreasing=TRUE)[1:20]
+df <- as.data.frame(colData(dds)[,c("condition")])
+rownames(df) <- rownames(colData(dds))
+colnames(df)[1] <- "condition"
+pheatmap(assay(ntd)[select,], cluster_rows=FALSE, show_rownames=FALSE,
+         cluster_cols=FALSE, annotation_col=df)
+```
+
+### Sample-to-Sample Distance Heatmap
+The raw data may have been good for differential analysis. However, for applications such as clustering, we want some normalized values. DESeq2 provides some functions for this.
+```{r}
+vsd <- vst(dds, blind=FALSE)
+head(assay(vsd), 3)
+```
+Now, we use this to provide a metric for sample-to-sample distance.
+```{r}
+sampleDists <- dist(t(assay(vsd)))
+```
+Visualize the distance matrix with a heatmap based on hierarchical clustering of sample distances
+```{r, echo=FALSE}
+sampleDistMatrix <- as.matrix(sampleDists)
+rownames(sampleDistMatrix) <- vsd$condition
+colnames(sampleDistMatrix) <- NULL
+colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
+pheatmap(sampleDistMatrix,
+         clustering_distance_rows=sampleDists,
+         clustering_distance_cols=sampleDists,
+         col=colors)
+```
+
+### PCA Plot
+```{r, echo=FALSE}
+plotPCA(vsd, intgroup="condition")
+```
