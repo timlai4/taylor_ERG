@@ -1,3 +1,8 @@
+wget ftp://ftp.ensembl.org/pub/release-99/gtf/homo_sapiens/Homo_sapiens.GRCh38.99.chr.gtf.gz
+wget ftp://ftp.ensembl.org/pub/release-99/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa.gz
+gunzip *.gz
+mv Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa hg38.fa
+
 mkdir fastqc_reports
 mkdir indices
 mkdir STAR
@@ -5,4 +10,4 @@ mkdir STAR
 fastqc *.fastq -t 6 -d fastqc_reports/
 qsub -l mem=48gb -l vmem=48gb job.script
 cd STAR
-find . -name "*.sam" | xargs basename -s ".fastq_Aligned.out.sam" | xargs -I{}  ../../taynick/rnaSeq/subread-2.0.0-Linux-x86_64/bin/featureCounts -T 6 -a ../ucscKnownGenes.gtf -o {}counts.txt {}.fastq_Aligned.out.sam
+../../taynick/rnaSeq/subread-2.0.0-Linux-x86_64/bin/featureCounts -T 6 -a ../Homo_sapiens.GRCh38.99.chr.gtf -o counts.tsv *.fastq_Aligned.out.sam
