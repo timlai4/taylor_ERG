@@ -1,0 +1,20 @@
+#!/bin/bash
+#PBS -k o
+#PBS -l nodes=1:ppn=4,walltime=02:00:00
+#PBS -M tlai4@disroot.org
+#PBS -m ae
+#PBS -j oe
+cd /N/dc2/scratch/timlai/rna2
+module load star
+
+#STAR --runThreadN 6 --runMode genomeGenerate --genomeFastaFiles hg38.fa --sjdbGTFfile Homo_sapiens.GRCh38.99.chr.gtf --genomeDir indices
+
+files=($(ls *.fastq))
+for file in ${files[@]}
+do
+    STAR --runThreadN 4 --genomeDir indices --readFilesIn $file --outFileNamePrefix STAR/${file}_
+done
+
+#STAR --runThreadN 8 --runMode genomeGenerate --genomeFastaFiles hg19.fa --sjdbGTFfile ucscKnownGenes.gtf --genomeDir indices
+#STAR --runThreadN 8 --genomeDir indices --readFilesIn <(ls *.fastq | sed -n -e 'H;${x;s/\n/,/g;s/^,//;p;}' | cat)
+#STAR --runThreadN 8 --genomeDir indices --readFilesIn RWPE1_EMPTY_R1.fastq,RWPE1_EMPTY_R2.fastq,RWPE1_EMPTY_R3.fastq,RWPE1_ERG_R1.fastq,RWPE1_ERG_R2.fastq,RWPE1_ERG_R3.fastq
