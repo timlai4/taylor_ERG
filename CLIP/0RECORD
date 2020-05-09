@@ -1,0 +1,19 @@
+wget https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos1/sra-pub-run-5/SRR907698/SRR907698.1
+wget https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos1/sra-pub-run-5/SRR907699/SRR907699.1
+wget https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos2/sra-pub-run-7/SRR907700/SRR907700.1
+
+
+# Cleaning the data (for use in bowtie2, skip in STAR)
+fastq-dump *
+fastqc -t 3 -o reports *.fastq
+qsub *.script
+trimmomatic SE test.fastq SRR907698.1_clean.fastq LEADING:3 TRAILING:3 SLIDINGWINDOW:3:14 MINLEN:13
+trimmomatic SE test2.fastq SRR907699.1_clean.fastq LEADING:3 TRAILING:3 SLIDINGWINDOW:3:14 MINLEN:13
+trimmomatic SE test3.fastq SRR907700.1_clean.fastq LEADING:3 TRAILING:3 SLIDINGWINDOW:3:14 MINLEN:13
+fastqc -t 3 -o reports *_clean.fastq
+
+qsub -l vmem=48gb align.script
+# Run through omniCLIP
+
+Rscript annoPeaks.R
+
