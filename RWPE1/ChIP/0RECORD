@@ -1,7 +1,7 @@
 wget https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos1/sra-pub-run-1/SRR314997/SRR314997.3 # Control
 wget https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos1/sra-pub-run-1/SRR315000/SRR315000.3 # Target
 fastq-dump SRR315000.3
-fastqc-dump SRR314997.3
+fastq-dump SRR314997.3
 fastqc SRR315000.3.fastq
 cp hg38.fa ../chip/
 mkdir index/index
