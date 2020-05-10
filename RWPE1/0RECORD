@@ -1,0 +1,6 @@
+# Get lists of genes from RNA and ChIP seq
+Rscript target2sequences.R
+
+grep -v "Sequence unavailable" target38_sequences.tsv > target38_seq_cleaned.tsv
+python genes_crosslist.py # Finds the intersection of the two
+awk '/^>/ { printf("%s_%s\n",$0,i++);next;} { print $0;}' target38_seq.fa > target38_seqin.fa
