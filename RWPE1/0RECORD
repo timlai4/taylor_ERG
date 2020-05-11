@@ -5,3 +5,4 @@ Rscript target2sequences.R
 python target38seqfasta.py
 grep -v "Sequence unavailable" target38_sequences.tsv > target38_seq_cleaned.tsv
 awk '/^>/ { printf("%s_%s\n",$0,i++);next;} { print $0;}' target38_seq.fa > target38_seqin.fa
+fimo --verbosity 1 meme.html target38_seqin.fa
