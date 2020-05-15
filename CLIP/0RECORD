@@ -18,4 +18,5 @@ qsub -l vmem=48gb align.script
 Rscript annoPeaks.R
 
 bedtools getfasta -name -fo peaks.fasta -fi hg38.fa -bed pred.bed
-meme -dna -pal peaks.fasta
+#meme -dna -pal peaks.fasta
+meme -dna -nmotifs 10 -mod anr -minw 6 -maxw 15 -p 4 peaks.fasta
