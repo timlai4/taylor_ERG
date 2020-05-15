@@ -1,0 +1,11 @@
+# Get gene names for RNA-seq dataset
+Rscript ids2names.R
+
+# Get lists of genes from RNA and ChIP seq
+python genes_crosslist.py # Finds the intersection of the two
+Rscript target2sequences.R
+
+grep -v "Sequence unavailable" target38_sequences.tsv > target38_seq_cleaned.tsv
+python target38seqfasta.py
+awk '/^>/ { printf("%s_%s\n",$0,i++);next;} { print $0;}' target38_seq.fa > target38_seqin.fa
+fimo --verbosity 1 meme.html target38_seqin.fa
