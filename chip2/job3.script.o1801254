@@ -1,0 +1,7 @@
+bowtie2 version 2.3.2 loaded.
+37316428 reads; of these:
+  37316428 (100.00%) were unpaired; of these:
+    599145 (1.61%) aligned 0 times
+    27589545 (73.93%) aligned exactly 1 time
+    9127738 (24.46%) aligned >1 times
+98.39% overall alignment rate

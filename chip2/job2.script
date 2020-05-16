@@ -1,0 +1,12 @@
+#!/bin/bash
+#PBS -k o
+#PBS -l nodes=1:ppn=4,walltime=02:00:00
+#PBS -M tlai4@disroot.org
+#PBS -m ae
+#PBS -j oe
+
+module load bowtie2/intel/2.3.2
+cd /N/dc2/scratch/timlai/chip2/TEST0/
+bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U GSF2362-Hollenhorst-2-EWS-ACTD_TRIMMED_S2_R1_001.fastq -S 2.sam
+
+
