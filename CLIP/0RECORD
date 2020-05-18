@@ -1,22 +1,18 @@
-wget https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos1/sra-pub-run-5/SRR907698/SRR907698.1
-wget https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos1/sra-pub-run-5/SRR907699/SRR907699.1
-wget https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos2/sra-pub-run-7/SRR907700/SRR907700.1
+# Download EWS_5fold data from CLIP-seq website
+# Do liftover to hg38 to get hglft_genome_4e2dd_995080.bed
+sed 's/chr//g' hglft_genome_4e2dd_995080.bed > temp.bed
+sed 's/^M/MT/g' temp.bed > EWS_5fold_hg38.fa
+bedtools getfasta -fo peaks.fa -fi hg38.fa -bed EWS_5fold_hg38.fa
 
+# MEME ChIP 
+meme-chip -meme-minw 6 -meme-maxw 15 -meme-nmotifs 5 -meme-p 4 peaks.fa
 
-# Cleaning the data (for use in bowtie2, skip in STAR)
-fastq-dump *
-fastqc -t 3 -o reports *.fastq
-qsub *.script
-trimmomatic SE test.fastq SRR907698.1_clean.fastq LEADING:3 TRAILING:3 SLIDINGWINDOW:3:14 MINLEN:13
-trimmomatic SE test2.fastq SRR907699.1_clean.fastq LEADING:3 TRAILING:3 SLIDINGWINDOW:3:14 MINLEN:13
-trimmomatic SE test3.fastq SRR907700.1_clean.fastq LEADING:3 TRAILING:3 SLIDINGWINDOW:3:14 MINLEN:13
-fastqc -t 3 -o reports *_clean.fastq
+# Next, extract the top three motifs PSSM and add them together.
+# Create motif from this
+# Use a MEME script to convert PSSM to MEME input (transfac2meme)
 
-qsub -l vmem=48gb align.script
-# Run through omniCLIP
+fimo --oc . --verbosity 1 --thresh 1.0E-4 motif.txt target38_seqin.fa
 
-Rscript annoPeaks.R
-
-bedtools getfasta -name -fo peaks.fasta -fi hg38.fa -bed pred.bed
-#meme -dna -pal peaks.fasta
-meme -dna -nmotifs 10 -mod anr -minw 6 -maxw 15 -p 4 peaks.fasta
+# MEME and FIMO separately
+meme -dna -nmotifs 15 -revcomp -mod anr -minw 5 -maxw 13 -p 4 peaks.fa
+fimo --verbosity 1 meme_out/meme.html target38_seqin.fa
