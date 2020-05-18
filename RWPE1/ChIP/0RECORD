@@ -14,6 +14,6 @@ samtools sort SRR315000.3.bam -o SRR315000.3_sorted.bam
 samtools index *sorted.bam
 macs2 callpeak -t aligned/SRR315000.3_sorted.bam -c aligned/SRR314997.3_sorted.bam -f BAM -g hs -n ERG --outdir peaks
 Rscript annoPeaks.R
-bamCoverage -b SRR314997.3_sorted.bam -o SRR314997.3.bw -bs 10 --normalizeUsing CPM -p 2
-bamCoverage -b SRR315000.3_sorted.bam -o SRR315000.3.bw -bs 10 --normalizeUsing CPM -p 2
+bamCoverage -b SRR314997.3_sorted.bam -o SRR314997.3.bw -bs 10 --normalizeUsing CPM -p 2 --extendReads 250 --effectiveGenomeSize 2913022398
+bamCoverage -b SRR315000.3_sorted.bam -o SRR315000.3.bw -bs 10 --normalizeUsing CPM -p 2 --extendReads 250 --effectiveGenomeSize 2913022398
 awk '$12 !~ /Distal/' annotated_peaks.tsv | cut -f 18 | sort | uniq > flagERG_uniqueGenes.txt
