@@ -7,19 +7,19 @@ fastqc *.fastq
 trimmomatic SE -phred33 GSF2362-Hollenhorst-1-EWS-DMSO_S1_R1_001.fastq GSF2362-Hollenhorst-1-EWS-DMSO_TRIMMED_S1_R1_001.fastq ILLUMINACLIP:/N/soft/rhel7/trimmomatic/0.36/adapters/TruSeq3-SE.fa:2:30:10 MINLEN:36
 trimmomatic SE -phred33 GSF2362-Hollenhorst-2-EWS-ACTD_S2_R1_001.fastq GSF2362-Hollenhorst-2-EWS-ACTD_TRIMMED_S2_R1_001.fastq ILLUMINACLIP:/N/soft/rhel7/trimmomatic/0.36/adapters/TruSeq3-SE.fa:2:30:10 MINLEN:36
 trimmomatic SE -phred33 GSF2362-Hollenhorst-3-ERG-DMSO_S3_R1_001.fastq GSF2362-Hollenhorst-3-ERG-DMSO_TRIMMED_S3_R1_001.fastq ILLUMINACLIP:/N/soft/rhel7/trimmomatic/0.36/adapters/TruSeq3-SE.fa:2:30:10 MINLEN:36
-bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U GSF2362-Hollenhorst-1-EWS-DMSO_S1_R1_001_clean.fastq -S S1_clean.sam
-bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U GSF2362-Hollenhorst-2-EWS-ACTD_S2_R1_001_clean.fastq -S S2_clean.sam
-bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U GSF2362-Hollenhorst-3-ERG-DMSO_S3_R1_001_clean.fastq -S S3_clean.sam
+bowtie2 --no-unal --threads 4 -x index/index -U GSF2362-Hollenhorst-1-EWS-DMSO_S1_R1_001_clean.fastq -S S1_clean.sam
+bowtie2 --no-unal --threads 4 -x index/index -U GSF2362-Hollenhorst-2-EWS-ACTD_S2_R1_001_clean.fastq -S S2_clean.sam
+bowtie2 --no-unal --threads 4 -x index/index -U GSF2362-Hollenhorst-3-ERG-DMSO_S3_R1_001_clean.fastq -S S3_clean.sam
 
 cutadapt -f 'fastq' -e 0.05 -m 1 -a \
 GATCGGAAGAGCACACGTCTGAACTCCAGTCACTGACCA \ # From FASTQC 
 -o GSF2362-Hollenhorst-4-ERG-ACTD_S4_R1_001_clean.fastq \
 GSF2362-Hollenhorst-4-ERG-ACTD_S4_R1_001.fastq
-bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U GSF2362-Hollenhorst-4-ERG-ACTD_S4_R1_001_clean.fastq -S S4_clean.sam
+bowtie2 --no-unal --threads 4 -x index/index -U GSF2362-Hollenhorst-4-ERG-ACTD_S4_R1_001_clean.fastq -S S4_clean.sam
 
 # For 5-6, do not use any trimming
-bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U GSF2362-Hollenhorst-5-DMSO-INPUT_S5_R1_001.fastq -S DMSO-INPUT.sam
-bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U GSF2362-Hollenhorst-6-ACTD-INPUT_S6_R1_001.fastq -S ACTD-INPUT.sam
+bowtie2 --no-unal --threads 4 -x index/index -U GSF2362-Hollenhorst-5-DMSO-INPUT_S5_R1_001.fastq -S DMSO-INPUT.sam
+bowtie2 -no-unal --threads 4 -x index/index -U GSF2362-Hollenhorst-6-ACTD-INPUT_S6_R1_001.fastq -S ACTD-INPUT.sam
 
 # Convert SAM to BAM with scripts
 sam.script

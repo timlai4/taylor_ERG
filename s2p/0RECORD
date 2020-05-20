@@ -14,13 +14,13 @@ fastqc *.fastq
 #GSF1617-5  RWPE1 -ERG/-EWS
 
 
-bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U GSF1617-1_S1_R1_001.fastq -S 1.sam
-bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U GSF1617-2_S2_R1_001.fastq -S 2.sam
-bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U GSF1617-4_S3_R1_001.fastq -S 4.sam
-bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U GSF1617-5_S4_R1_001.fastq -S 5.sam
-bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U SRR4099193.1.fastq -S input1.sam
-bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U SRR5291575.1.fastq -S input2.sam
-bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U SRR3654801.1.fastq -S SRR3654801.1.sam
+bowtie2 --no-unal --threads 4 -x index/index -U GSF1617-1_S1_R1_001.fastq -S 1.sam
+bowtie2 --no-unal --threads 4 -x index/index -U GSF1617-2_S2_R1_001.fastq -S 2.sam
+bowtie2 --no-unal --threads 4 -x index/index -U GSF1617-4_S3_R1_001.fastq -S 4.sam
+bowtie2 --no-unal --threads 4 -x index/index -U GSF1617-5_S4_R1_001.fastq -S 5.sam
+bowtie2 --no-unal --threads 4 -x index/index -U SRR4099193.1.fastq -S input1.sam
+bowtie2 --no-unal --threads 4 -x index/index -U SRR5291575.1.fastq -S input2.sam
+bowtie2 --no-unal --threads 4 -x index/index -U SRR3654801.1.fastq -S SRR3654801.1.sam
 
 # Samtools convert to BAM
 
