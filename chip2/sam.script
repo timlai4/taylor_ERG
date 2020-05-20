@@ -1,0 +1,32 @@
+#!/bin/bash
+#PBS -k o
+#PBS -l nodes=1:ppn=4,walltime=02:00:00
+#PBS -M tlai4@disroot.org
+#PBS -m ae
+#PBS -j oe
+
+module load samtools/1.9
+cd /N/dc2/scratch/timlai/chip2/
+
+files=($(ls *clean.sam))
+
+for file in ${files[@]}
+do
+    file_name="$(basename $file .sam)"
+    samtools view -b $file > ${file_name}.bam &
+done
+wait
+
+for file in ${files[@]}
+do
+    file_name="$(basename $file .sam)"
+    samtools sort ${file_name}.bam -o ${file_name}_sorted.bam &
+done
+wait
+
+for file in ${files[@]}
+do
+    file_name="$(basename $file .sam)"
+    samtools index ${file_name}_sorted.bam
+done
+wait
