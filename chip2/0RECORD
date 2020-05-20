@@ -1,8 +1,51 @@
 wget --user=PeterHollenhorst --ask-password https://lims.cgb.indiana.edu/outbox/HollenhorstLab/GSF2362/archive-GSF2362.tar
 tar -xzvf archive-GSF2362.tar
 gunzip *.gz
+
 fastqc *.fastq
 # For 1-3, use trimmomatic, but for 4, use cutadapt
+trimmomatic SE -phred33 GSF2362-Hollenhorst-1-EWS-DMSO_S1_R1_001.fastq GSF2362-Hollenhorst-1-EWS-DMSO_TRIMMED_S1_R1_001.fastq ILLUMINACLIP:/N/soft/rhel7/trimmomatic/0.36/adapters/TruSeq3-SE.fa:2:30:10 MINLEN:36
+trimmomatic SE -phred33 GSF2362-Hollenhorst-2-EWS-ACTD_S2_R1_001.fastq GSF2362-Hollenhorst-2-EWS-ACTD_TRIMMED_S2_R1_001.fastq ILLUMINACLIP:/N/soft/rhel7/trimmomatic/0.36/adapters/TruSeq3-SE.fa:2:30:10 MINLEN:36
+trimmomatic SE -phred33 GSF2362-Hollenhorst-3-ERG-DMSO_S3_R1_001.fastq GSF2362-Hollenhorst-3-ERG-DMSO_TRIMMED_S3_R1_001.fastq ILLUMINACLIP:/N/soft/rhel7/trimmomatic/0.36/adapters/TruSeq3-SE.fa:2:30:10 MINLEN:36
+bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U GSF2362-Hollenhorst-1-EWS-DMSO_S1_R1_001_clean.fastq -S S1_clean.sam
+bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U GSF2362-Hollenhorst-2-EWS-ACTD_S2_R1_001_clean.fastq -S S2_clean.sam
+bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U GSF2362-Hollenhorst-3-ERG-DMSO_S3_R1_001_clean.fastq -S S3_clean.sam
+
+cutadapt -f 'fastq' -e 0.05 -m 1 -a \
+GATCGGAAGAGCACACGTCTGAACTCCAGTCACTGACCA \ # From FASTQC 
+-o GSF2362-Hollenhorst-4-ERG-ACTD_S4_R1_001_clean.fastq \
+GSF2362-Hollenhorst-4-ERG-ACTD_S4_R1_001.fastq
+bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U GSF2362-Hollenhorst-4-ERG-ACTD_S4_R1_001_clean.fastq -S S4_clean.sam
 
 # For 5-6, do not use any trimming
-All contained in job[1-6].script
+bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U GSF2362-Hollenhorst-5-DMSO-INPUT_S5_R1_001.fastq -S DMSO-INPUT.sam
+bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U GSF2362-Hollenhorst-6-ACTD-INPUT_S6_R1_001.fastq -S ACTD-INPUT.sam
+
+# Convert SAM to BAM with scripts
+sam.script
+sam2.script
+
+# QC
+plotFingerprint -b S1_clean_sorted.bam DMSO-INPUT_sorted.bam -plot S1fingerprint.png
+plotFingerprint -b S2_clean_sorted.bam ACTD-INPUT_sorted.bam -plot S2fingerprint.png
+plotFingerprint -b S3_clean_sorted.bam DMSO-INPUT_sorted.bam -plot S3fingerprint.png
+plotFingerprint -b S4_clean_sorted.bam ACTD-INPUT_sorted.bam -plot S4fingerprint.png
+
+# Not very distinguishable from fingerprint, so use readCounts (Default) in bamcompare
+
+bamCompare -b1 S1_clean_sorted.bam -b2 DMSO-INPUT_sorted.bam -o EWS-DMSO.bw -bs 1 -p 2 --extendReads 275 --effectiveGenomeSize 2913022398
+bamCompare -b1 S2_clean_sorted.bam -b2 ACTD-INPUT_sorted.bam -o EWS-ACTD.bw -bs 1 -p 2 --extendReads 275 --effectiveGenomeSize 2913022398
+bamCompare -b1 S3_clean_sorted.bam -b2 DMSO-INPUT_sorted.bam -o ERG-DMSO.bw -bs 1 -p 2 --extendReads 275 --effectiveGenomeSize 2913022398
+bamCompare -b1 S4_clean_sorted.bam -b2 ACTD-INPUT_sorted.bam -o ERG-ACTD.bw -bs 1 -p 2 --extendReads 275 --effectiveGenomeSize 2913022398
+
+
+# Take the VCaP peak call and convert to BED. Center based on this
+cut -f1,2,3,4,5,6 ../VCaP/chip/aERG_peaks.narrowPeak > peaks.bed
+
+computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -R peaks.bed -S *.bw --skipZeros -o ERGref.mat.gz
+#computeMatrix scale-regions  -b 3000 -a 3000 -R peaks.bed -S *.bw --skipZeros -o ERGscale.mat.gz
+
+plotHeatmap -m ERGref.mat.gz -out ERGref_heatmap.png
+#plotHeatmap -m ERGscale.mat.gz -out ERGscale_heatmap.png
+
+plotProfile -m ERGref.mat.gz -out avgPlot.png --perGroup

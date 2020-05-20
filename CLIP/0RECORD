@@ -10,9 +10,17 @@ meme-chip -meme-minw 6 -meme-maxw 15 -meme-nmotifs 5 -meme-p 4 peaks.fa
 # Next, extract the top three motifs PSSM and add them together.
 # Create motif from this
 # Use a MEME script to convert PSSM to MEME input (transfac2meme)
+transfac2meme test.txt > motif.txt
 
 fimo --oc . --verbosity 1 --thresh 1.0E-4 motif.txt target38_seqin.fa
+cut -f3 fimo.tsv > motif_gene_names.txt
 
 # MEME and FIMO separately
 meme -dna -nmotifs 15 -revcomp -mod anr -minw 5 -maxw 13 -p 4 peaks.fa
 fimo --verbosity 1 meme_out/meme.html target38_seqin.fa
+
+# Run Python script to check FIMO
+
+# Checking s2p
+# First format the FIMO output
+grep -v "^#" fimo.tsv | cut -f3 | awk -F '[,_]' '{ print $1 }' | sort | uniq > motif_genes.txt

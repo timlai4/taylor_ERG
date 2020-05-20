@@ -1,0 +1,35 @@
+#wget --user=PeterHollenhorst --ask-password https://lims.cgb.indiana.edu/outbox/HollenhorstLab/GSF1605-NextSeq75-16Nov2017/archive-GSF1605-17Nov2017.tar.gz # Input data
+
+wget --user=PeterHollenhorst --ask-password https://lims.cgb.indiana.edu/outbox/HollenhorstLab/GSF1617B-NextSeq75-Taylor-7Dec2017/archive-GSF1617B-8Dec2017.tar.gz # Treated data
+wget https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos2/sra-pub-run-9/SRR4099193/SRR4099193.1
+wget https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos2/sra-pub-run-9/SRR5291575/SRR5291575.1
+wget https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos1/sra-pub-run-1/SRR3654801/SRR3654801.1
+
+fastq-dump SRR4099193.1 SRR5291575.1 SRR3654801.1
+fastqc *.fastq
+
+#GSF1617-1   RWPE1 +ERG/+EWS
+#GSF1617-2  RWPE1 +ERG/-EWS
+#GSF1617-4  RWPE1 -ERG/+EWS
+#GSF1617-5  RWPE1 -ERG/-EWS
+
+
+bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U GSF1617-1_S1_R1_001.fastq -S 1.sam
+bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U GSF1617-2_S2_R1_001.fastq -S 2.sam
+bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U GSF1617-4_S3_R1_001.fastq -S 4.sam
+bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U GSF1617-5_S4_R1_001.fastq -S 5.sam
+bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U SRR4099193.1.fastq -S input1.sam
+bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U SRR5291575.1.fastq -S input2.sam
+bowtie2 --no-unal --threads 4 --no-unal --threads 4 -x index/index -U SRR3654801.1.fastq -S SRR3654801.1.sam
+
+# Samtools convert to BAM
+
+# QC Fingerprint
+plotFingerprint -b *sorted.bam -plot fingerprint.png 
+# input1 doesn't look good
+
+
+bamCompare -b1 1_sorted.bam -b2 input2_sorted.bam -o 1.bw -bs 5 -p 8 --extendReads 300 --effectiveGenomeSize 2913022398
+bamCompare -b1 2_sorted.bam -b2 input2_sorted.bam -o 2.bw -bs 5 -p 8 --extendReads 300 --effectiveGenomeSize 2913022398
+bamCompare -b1 4_sorted.bam -b2 input2_sorted.bam -o 4.bw -bs 5 -p 8 --extendReads 300 --effectiveGenomeSize 2913022398
+bamCompare -b1 5_sorted.bam -b2 input2_sorted.bam -o 5.bw -bs 5 -p 8 --extendReads 300 --effectiveGenomeSize 2913022398
