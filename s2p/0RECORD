@@ -28,8 +28,12 @@ bowtie2 --no-unal --threads 4 -x index/index -U SRR3654801.1.fastq -S SRR3654801
 plotFingerprint -b *sorted.bam -plot fingerprint.png 
 # input1 doesn't look good
 
-
 bamCompare -b1 1_sorted.bam -b2 input2_sorted.bam -o 1.bw -bs 5 -p 8 --extendReads 300 --effectiveGenomeSize 2913022398
 bamCompare -b1 2_sorted.bam -b2 input2_sorted.bam -o 2.bw -bs 5 -p 8 --extendReads 300 --effectiveGenomeSize 2913022398
 bamCompare -b1 4_sorted.bam -b2 input2_sorted.bam -o 4.bw -bs 5 -p 8 --extendReads 300 --effectiveGenomeSize 2913022398
 bamCompare -b1 5_sorted.bam -b2 input2_sorted.bam -o 5.bw -bs 5 -p 8 --extendReads 300 --effectiveGenomeSize 2913022398
+bamCompare -b1 SRR3654801.1_sorted.bam -b2 input2_sorted.bam -o 5.bw -bs 5 -p 8 --extendReads 300 --effectiveGenomeSize 2913022398
+
+# Center plots on target genes
+# First, get the BED file from list of target genes
+Rscript ../ids2bed.R
