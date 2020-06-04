@@ -19,9 +19,14 @@ annotated  <- as.data.frame(annotated)
 write.table(annotated, "annotated_peaks.tsv", sep = '\t', col.names = TRUE, 
             row.names = FALSE, quote = FALSE, na = "")
 
-# We are interested in considering promoters vs. enhancers
+# We are interested in considering promoters (and their genes) vs. enhancers
 # Here, we define promoter to be +/- 500 from TSS.
 promoters <- annotated$annotation == "Promoter (<=1kb)" 
+gene_bed_columns <- c(13, 14, 15, 18, 7, 17) # The columns in annotated that comprise the BED information.
+promoter_genes <- annotated[promoters, gene_bed_columns]
+promoter_genes <- mutate(promoter_genes, geneStrand = ifelse(geneStrand == 1, "+", "-"))
+write.table(promoter_genes, "promoter_genes.bed", sep = '\t', 
+            col.names = FALSE, row.names = FALSE, quote = FALSE, na = "")
 # Now, save as BED files for downstream analyses.
 bed_columns <- c(1, 2, 3, 6, 7)
 write.table(annotated[promoters, bed_columns], "promoter_peaks.bed", sep = '\t', 
