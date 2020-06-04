@@ -42,10 +42,32 @@ bamCompare -b1 S4_clean_sorted.bam -b2 ACTD-INPUT_sorted.bam -o ERG-ACTD.bw -bs 
 # Take the VCaP peak call and convert to BED. Center based on this
 cut -f1,2,3,4,5,6 ../VCaP/chip/aERG_peaks.narrowPeak > peaks.bed
 
-computeMatrix reference-point --referencePoint center -b 3000 -a 3000 -R peaks.bed -S *.bw --skipZeros -o ERGref.mat.gz
+computeMatrix reference-point --referencePoint center -b 5000 -a 5000 -R peaks.bed -S *.bw --skipZeros -missingDataAsZeros -o ERGref.mat.gz
 #computeMatrix scale-regions  -b 3000 -a 3000 -R peaks.bed -S *.bw --skipZeros -o ERGscale.mat.gz
 
-plotHeatmap -m ERGref.mat.gz -out ERGref_heatmap.png
+plotHeatmap -m ERGref.mat.gz -out ERGref_heatmap.png --colorMap viridis
 #plotHeatmap -m ERGscale.mat.gz -out ERGscale_heatmap.png
 
 plotProfile -m ERGref.mat.gz -out avgPlot.png --perGroup
+plotProfile -m ERGbound.mat.gz -out metaGenecolored.png --perGroup --colors "#9D1B45" "#F36D44" "#3288BD" "#5F50A1"
+
+
+# Create plots separated by promoters vs. enhancers.
+# First cp the separated peak BED files from VCaP/chip
+
+cp ../VCaP/chip/*er_peaks.bed . 
+
+computeMatrix scale-regions -p 5 -b 3000 -a 3000 -R promoter_peaks.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o scaled_promoter.mat.gz --missingDataAsZero && plotHeatmap -m scaled_promoter.mat.gz -out 
+promoter_scaled_heatmap.png --colorMap viridis computeMatrix reference-point --referencePoint center -b 5000 -a 5000 -R promoter_peaks.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o promoter.mat.gz -p 4 
+--missingDataAsZero && plotHeatmap -m promoter.mat.gz -out promoter_ref_heatmap.png --colorMap viridis
+  994 computeMatrix reference-point --referencePoint center -b 5000 -a 5000 -R enhancer_peaks.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o enhancer.mat.gz -p 4 --missingDataAsZero && plotHeatmap -m 
+enhancer.mat.gz -out enhancer_ref_heatmap.png --colorMap viridis
+  995 conda activate dt
+  996  computeMatrix reference-point --referencePoint center -b 5000 -a 5000 -R enhancer_peaks.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o enhancer.mat.gz -p 4 --missingDataAsZero && plotHeatmap -m 
+enhancer.mat.gz -out enhancer_ref_heatmap.png --colorMap viridis
+  997  computeMatrix scale-regions -p 5 -b 3000 -a 3000 -R promoter_peaks.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o scaled_enhancer.mat.gz --missingDataAsZero && plotHeatmap -m scaled_enhancer.mat.gz 
+-out enhancer_scaled_heatmap.png --colorMap viridis 998 conda activate dt
+  999  computeMatrix scale-regions -p 5 -b 3000 -a 3000 -R promoter_peaks.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o scaled_enhancer.mat.gz --missingDataAsZero && plotHeatmap -m scaled_enhancer.mat.gz 
+-out enhancer_scaled_heatmap.png --colorMap viridis
+ 1000  computeMatrix scale-regions -p 6 -b 3000 -a 3000 -R enhancer_peaks.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o scaled_enhancer.mat.gz --missingDataAsZero && plotHeatmap -m scaled_enhancer.mat.gz 
+-out enhancer_scaled_heatmap.png --colorMap viridis
