@@ -67,11 +67,14 @@ computeMatrix reference-point --referencePoint center -b 5000 -a 5000 -R promote
 enhancer.mat.gz -out enhancer_ref_heatmap.png --colorMap viridis
   996  computeMatrix reference-point --referencePoint center -b 5000 -a 5000 -R enhancer_peaks.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o enhancer.mat.gz -p 4 --missingDataAsZero && plotHeatmap -m 
 enhancer.mat.gz -out enhancer_ref_heatmap.png --colorMap viridis
-  997  computeMatrix scale-regions -p 5 -b 3000 -a 3000 -R promoter_peaks.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o scaled_enhancer.mat.gz --missingDataAsZero && plotHeatmap -m scaled_enhancer.mat.gz 
+  997  computeMatrix scale-regions -p 5 -b 3000 -a 3000 --regionBodyLength 5000 -R promoter_peaks.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o scaled_enhancer.mat.gz --missingDataAsZero && plotHeatmap -m 
+scaled_enhancer.mat.gz 
 -out enhancer_scaled_heatmap.png --colorMap viridis 998 conda activate dt
-  999  computeMatrix scale-regions -p 5 -b 3000 -a 3000 -R promoter_peaks.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o scaled_enhancer.mat.gz --missingDataAsZero && plotHeatmap -m scaled_enhancer.mat.gz 
+  999  computeMatrix scale-regions -p 5 -b 3000 -a 3000 --regionBodyLength 5000 -R promoter_peaks.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o scaled_enhancer.mat.gz --missingDataAsZero && plotHeatmap -m 
+scaled_enhancer.mat.gz 
 -out enhancer_scaled_heatmap.png --colorMap viridis
- 1000  computeMatrix scale-regions -p 6 -b 3000 -a 3000 -R enhancer_peaks.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o scaled_enhancer.mat.gz --missingDataAsZero && plotHeatmap -m scaled_enhancer.mat.gz 
+ 1000  computeMatrix scale-regions -p 6 -b 3000 -a 3000 --regionBodyLength 5000 -R enhancer_peaks.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o scaled_enhancer.mat.gz --missingDataAsZero && plotHeatmap -m 
+scaled_enhancer.mat.gz 
 -out enhancer_scaled_heatmap.png --colorMap viridis
 
 computeMatrix scale-regions -p 5 -b 3000 -a 3000 -R promoter_genes.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o promotergenes_scaled.mat.gz --missingDataAsZero
