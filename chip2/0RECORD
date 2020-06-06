@@ -59,7 +59,8 @@ cp ../VCaP/chip/*er_peaks.bed .
 cp ../VCaP/chip/promoter_genes.bed .
 # For the promoters, we can also center on the gene bodies. 
 
-computeMatrix scale-regions -p 5 -b 3000 -a 3000 -R promoter_peaks.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o scaled_promoter.mat.gz --missingDataAsZero && plotHeatmap -m scaled_promoter.mat.gz -out 
+computeMatrix scale-regions -p 5 -b 3000 -a 3000 --regionBodyLength 5000 -R promoter_peaks.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o scaled_promoter.mat.gz --missingDataAsZero && plotHeatmap -m 
+scaled_promoter.mat.gz -out 
 promoter_scaled_heatmap.png --colorMap viridis 
 computeMatrix reference-point --referencePoint center -b 5000 -a 5000 -R promoter_peaks.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o promoter.mat.gz -p 4 
 --missingDataAsZero && plotHeatmap -m promoter.mat.gz -out promoter_ref_heatmap.png --colorMap viridis
@@ -77,6 +78,6 @@ scaled_enhancer.mat.gz
 scaled_enhancer.mat.gz 
 -out enhancer_scaled_heatmap.png --colorMap viridis
 
-computeMatrix scale-regions -p 5 -b 3000 -a 3000 -R promoter_genes.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o promotergenes_scaled.mat.gz --missingDataAsZero
+computeMatrix scale-regions -p 5 -b 3000 -a 3000 --regionBodyLength 5000 -R promoter_genes.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o promotergenes_scaled.mat.gz --missingDataAsZero
 plotHeatmap -m promotergenes_scaled.mat.gz -out promotergenes_heatmap.png --colorMap viridis
-plotProfile -m promotergenes_scaled.mat.gz -out promotergenes_profile.png --perGroup
+plotProfile -m promotergenes_scaled.mat.gz -out promotergenes_profile.png --perGroup --colors "#9D1B45" "#F36D44" "#3288BD" "#5F50A1"
