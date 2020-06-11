@@ -42,7 +42,7 @@ bamCompare -b1 S4_clean_sorted.bam -b2 ACTD-INPUT_sorted.bam -o ERG-ACTD.bw -bs 
 # Take the VCaP peak call and convert to BED. Center based on this
 cut -f1,2,3,4,5,6 ../VCaP/chip/aERG_peaks.narrowPeak > peaks.bed
 
-computeMatrix reference-point --referencePoint center -b 5000 -a 5000 -R peaks.bed -S *.bw --skipZeros -missingDataAsZeros -o ERGref.mat.gz
+computeMatrix reference-point --referencePoint center -b 5000 -a 5000 -R peaks.bed -S *.bw --skipZeros --missingDataAsZero -p 4 -o ERGref.mat.gz
 #computeMatrix scale-regions  -b 3000 -a 3000 -R peaks.bed -S *.bw --skipZeros -o ERGscale.mat.gz
 
 plotHeatmap -m ERGref.mat.gz -out ERGref_heatmap.png --colorMap viridis
