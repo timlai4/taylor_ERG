@@ -93,9 +93,11 @@ resOrdered <- res[order(res$pvalue),]
 ```
 Now, filter out by p-value threshold and log2fc and export it as CSV.
 ```{r}
-resSig <- subset(resOrdered, padj < 0.1)
+resSig <- subset(resOrdered, padj < 0.05)
 resSig <- subset(resSig, abs(log2FoldChange) > 1)
 write.csv(as.data.frame(resSig), file="condition_ERG_results.csv")
+write.csv(as.data.frame(subset(resSig, log2FoldChange > 1)), file="ERG_activated.csv")
+write.csv(as.data.frame(subset(resSig, log2FoldChange < 1)), file="ERG_repressed.csv")
 ```
 ## Data Quality Assessment
 

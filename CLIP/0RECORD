@@ -23,4 +23,4 @@ fimo --verbosity 1 meme_out/meme.html target38_seqin.fa
 
 # Checking s2p
 # First format the FIMO output
-grep -v "^#" fimo.tsv | cut -f3 | awk -F '[,_]' '{ print $1 }' | sort | uniq > motif_genes.txt
+grep -v "^#" fimo.tsv | cut -f3 | awk -F '[,_]' '{ print $1 }' | grep -v "^sequence" | sort | uniq > motif_genes.txt

@@ -17,3 +17,21 @@ targets = ERG.intersection(genes)
 with open('target38.txt', 'w') as f:
     for target in targets:
         f.write("%s\n" % target)
+
+
+df = pd.read_csv("ERG_activated_ids_names.tsv", sep = '\t', index_col = False)
+genes = set(df['ensembl_gene_id'])
+targets = ERG.intersection(genes)
+
+with open('activated_target38.txt', 'w') as f:
+    for target in targets:
+        f.write("%s\n" % target)
+        
+df = pd.read_csv("ERG_repressed_ids_names.tsv", sep = '\t', index_col = False)
+genes = set(df['ensembl_gene_id'])
+targets = ERG.intersection(genes)
+
+with open('repressed_target38.txt', 'w') as f:
+    for target in targets:
+        f.write("%s\n" % target)
+        
