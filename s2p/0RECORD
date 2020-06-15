@@ -37,3 +37,11 @@ bamCompare -b1 SRR3654801.1_sorted.bam -b2 input2_sorted.bam -o 5.bw -bs 5 -p 8 
 # Center plots on target genes
 # First, get the BED file from list of target genes
 Rscript ../ids2bed.R
+
+# Get *fimo.bed from RWPE1/rna and CLIP
+computeMatrix scale-regions -b 3000 -a 3000 --regionBodyLength 5000 -R activated_*.bed -S 1.bw --skipZeros -o 1activated_scaled.mat.gz --missingDataAsZero
+computeMatrix scale-regions -b 3000 -a 3000 --regionBodyLength 5000 -R repressed_*.bed -S 1.bw --skipZeros -o 1repressed_scaled.mat.gz --missingDataAsZero
+computeMatrix scale-regions -b 3000 -a 3000 --regionBodyLength 5000 -R fimo.bed nonfimo.bed -S 1.bw 4.bw --skipZeros -o 14fimo_scaled.mat.gz --missingDataAsZero
+
+plotProfile -m 14fimo_scaled.mat.gz -out 14fimo_profile.png --perGroup
+# And the other .mat.gz similarly
