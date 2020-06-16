@@ -1,7 +1,6 @@
 # Download EWS_5fold data from CLIP-seq website
 # Do liftover to hg38 to get hglft_genome_4e2dd_995080.bed
-sed 's/chr//g' hglft_genome_4e2dd_995080.bed > temp.bed
-sed 's/^M/MT/g' temp.bed > EWS_5fold_hg38.bed
+sed 's/chr//g' hglft_genome_4e2dd_995080.bed | sed 's/^M/MT/g' > EWS_5fold_hg38.bed
 bedtools getfasta -fo peaks.fa -fi hg38.fa -bed EWS_5fold_hg38.bed
 
 # MEME ChIP 

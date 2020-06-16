@@ -1,0 +1,1 @@
+/home/timlai/anaconda3/envs/roar/lib/R/library/roar/examples/roarWrapper_multipleAPA.R -t ERG_R1_sorted.bam,ERG_R2_sorted.bam,ERG_R3_sorted.bam -c EMPTY_R1_sorted.bam,EMPTY_R2_sorted.bam,EMPTY_R3_sorted.bam -a hg38.gtf > roar.tsv
