@@ -4,8 +4,11 @@ python genes_crosslist.py # Finds the intersection of the two
 # (Optional) Get gene names from gene ID's
 Rscript ids2names.R
 
-# Get underlying sequences
+# Get underlying sequences of 5'UTR
 Rscript target2sequences.R
+# Alternatively, target the first 100 bp downstream TSS
+Rscript target2TSS.R
+bedtools getfasta -fo target100tss.fa -name -fi hg38.fa -bed target_100tss.bed
 
 grep -v "Sequence unavailable" target38_sequences.tsv > target38_seq_cleaned.tsv
 python target38seqfasta.py

@@ -21,10 +21,12 @@ output in addition to the main list.
 ### Integrating RNA and ChIP-seqs
 The main purpose of this documentation was to describe how we integrate the RNA and ChIP-seq data. We document this now. First, the script ids2names.R takes the output of the RNA-seq DGE, which gives gene ID's, and appends the 
 corresponding gene name. The output is saved in ensembl_ids_names.tsv. Next, a helper Python script genes_crosslist.py takes the RNA-seq information and intersects it with the ChIP-seq genes. The resulting genes represent the 
-overall targets we wish to consider for further downstream analysis, which includes sequence-level statistics, such as motif search. To facilitate this, we extract the FASTA file, i.e. the underlying sequences, to the gene names. 
-The R script taret2sequences.R followed by a small cleanup step in the terminal
+overall targets we wish to consider for further downstream analysis, which includes sequence-level statistics, such as motif search. To facilitate this, we extract the FASTA file, i.e. the underlying sequences, to various 
+regions of interest corresponding to the gene names. 
+The R script taret2sequences.R or target2TSS.R followed by a small cleanup step in the terminal
 ```{bash}
 grep -v "Sequence unavailable" target38_sequences.tsv > target38_seq_cleaned.tsv
 ```
-accomplishes this. Finally, we convert the tab-separated file into FASTA in BioPython using target38seqfasta.py. Note that in all of these steps, the scripts support additional subsetting alluded to in the RNA-seq outputs 
+accomplishes this. In particular, the former extracts the 5' UTR regions while the latter targets the 100bp downstream of the TSS. Finally, we convert the tab-separated file into FASTA in BioPython using target38seqfasta.py. Note 
+that in all of these steps, the scripts support additional subsetting alluded to in the RNA-seq outputs 
 section. 
