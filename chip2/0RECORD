@@ -56,7 +56,7 @@ plotProfile -m ERGbound.mat.gz -out metaGenecolored.png --perGroup --colors "#9D
 # First cp the separated peak BED files from VCaP/chip
 
 cp ../VCaP/chip/*er_peaks.bed . 
-cp ../VCaP/chip/promoter_genes.bed .
+cp ../VCaP/chip/*er_genes.bed .
 # For the promoters, we can also center on the gene bodies. 
 
 computeMatrix scale-regions -p 5 -b 3000 -a 3000 --regionBodyLength 5000 -R promoter_peaks.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o scaled_promoter.mat.gz --missingDataAsZero && plotHeatmap -m 
@@ -81,3 +81,7 @@ scaled_enhancer.mat.gz
 computeMatrix scale-regions -p 5 -b 3000 -a 3000 --regionBodyLength 5000 -R promoter_genes.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o promotergenes_scaled.mat.gz --missingDataAsZero
 plotHeatmap -m promotergenes_scaled.mat.gz -out promotergenes_heatmap.png --colorMap viridis
 plotProfile -m promotergenes_scaled.mat.gz -out promotergenes_profile.png --perGroup --colors "#9D1B45" "#F36D44" "#3288BD" "#5F50A1"
+
+computeMatrix scale-regions -p 5 -b 3000 -a 3000 --regionBodyLength 5000 -R enhancer_genes.bed -S ERG-DMSO.bw ERG-ACTD.bw EWS-DMSO.bw EWS-ACTD.bw --skipZeros -o enhancergenes_scaled.mat.gz --missingDataAsZero
+plotHeatmap -m enhancergenes_scaled.mat.gz -out enhancergenes_heatmap.png --colorMap viridis 
+plotProfile -m enhancergenes_scaled.mat.gz -out enhancergenes_profile.png --perGroup --colors "#9D1B45" "#F36D44" "#3288BD" "#5F50A1"
