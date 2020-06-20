@@ -1,3 +1,6 @@
 wget https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos1/sra-pub-run-2/SRR1657533/SRR1657533.1 # treated
 wget https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos1/sra-pub-run-1/SRR191723/SRR191723.3 # control
 macs2 callpeak -t treated_sorted.bam -c control_sorted.bam -f BAM -g hs -n aERG --outdir peaks
+
+plotFingerprint -b *sorted.bam -plot fingerprint.png -p 10
+bamCompare -b1 treated_sorted.bam -b2 control_sorted.bam -o vcap_erg.bw -bs 5 -p 10 --extendReads 250 --effectiveGenomeSize 2913022398
