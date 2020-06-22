@@ -1,19 +1,18 @@
-wget https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos1/sra-pub-run-1/SRR314997/SRR314997.3 # Control
-wget https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos1/sra-pub-run-1/SRR315000/SRR315000.3 # Target
-fastq-dump SRR315000.3
-fastq-dump SRR314997.3
-fastqc SRR315000.3.fastq
-cp hg38.fa ../chip/
+wget https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos1/sra-pub-run-2/SRR493814/SRR493814.2
+wget https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos1/sra-pub-run-2/SRR493815/SRR493815.2
+fastq-dump *
+fastqc -t 2 *.fastq
+cp hg37.fa ../chip/
 mkdir index/index
 bowtie2-build hg38.fa index # Might need to submit as PBS
-bowtie2 --no-unal --threads 3 -x index/index -U SRR315000.3.fastq -S SRR315000.3.sam
-bowtie2 --no-unal --threads 3 -x index/index -U SRR314997.3.fastq -S SRR314997.3.sam
-samtools view -b SRR315000.3.sam > SRR315000.3.bam
-samtools view -b SRR314997.3.sam > SRR314997.3.bam
-samtools sort SRR315000.3.bam -o SRR315000.3_sorted.bam
-samtools index *sorted.bam
-macs2 callpeak -t aligned/SRR315000.3_sorted.bam -c aligned/SRR314997.3_sorted.bam -f BAM -g hs -n ERG --outdir peaks
+bowtie2 --no-unal --threads 4 -x index/index -U SRR493814.2.fastq -S ERG_chip.sam
+samtools view -b ERG_chip.sam > ERG_chip.bam
+samtools sort ERG-chip.bam -o ERG_chip_sorted.bam
+samtools index ERG_chip_sorted.bam
+bowtie2 --no-unal --threads 4 -x index/index -U SRR493815.2.fastq -S input.sam
+samtools view -b input.sam > input.bam
+samtools sort input.bam -o input_sorted.bam
+samtools index input_sorted.bam
+macs2 callpeak -t ERG_chip_sorted.bam -c input_sorted.bam -f BAM -g hs -n ERG --outdir peaks -p .001
 Rscript annoPeaks.R
-bamCoverage -b SRR314997.3_sorted.bam -o SRR314997.3.bw -bs 10 --normalizeUsing CPM -p 2 --extendReads 250 --effectiveGenomeSize 2913022398
-bamCoverage -b SRR315000.3_sorted.bam -o SRR315000.3.bw -bs 10 --normalizeUsing CPM -p 2 --extendReads 250 --effectiveGenomeSize 2913022398
 awk '$12 !~ /Distal/' annotated_peaks.tsv | cut -f 18 | sort | uniq > flagERG_uniqueGenes.txt
