@@ -10,7 +10,7 @@ mkdir STAR
 fastqc *.fastq -t 6 -d fastqc_reports/
 qsub -l mem=48gb -l vmem=48gb job.script
 cd STAR
-../../taynick/rnaSeq/subread-2.0.0-Linux-x86_64/bin/featureCounts -T 6 -a ../Homo_sapiens.GRCh38.99.chr.gtf -o counts.tsv *.fastq_Aligned.out.sam --outSAMtype BAM SortedByCoordinate
+../../taynick/rnaSeq/subread-2.0.0-Linux-x86_64/bin/featureCounts -T 6 -a ../Homo_sapiens.GRCh38.99.chr.gtf -o counts.tsv *.fastq_Aligned.out.sam 
 
 # Differential Expression Analysis on counts.tsv
 # Run dea.Rmd

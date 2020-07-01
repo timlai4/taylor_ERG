@@ -7,11 +7,11 @@
 cd /N/dc2/scratch/timlai/rna
 module load star
 
-STAR --runThreadN 6 --runMode genomeGenerate --genomeFastaFiles hg19.fa --sjdbGTFfile ucscKnownGenes.gtf --genomeDir indices
+STAR --runThreadN 6 --runMode genomeGenerate --genomeFastaFiles hg38.fa --sjdbGTFfile Homo_sapiens.GRCh38.99.chr.gtf --genomeDir indices
 
 files=($(ls *.fastq))
 for file in ${files[@]}
 do
-    STAR --runThreadN 6 --genomeDir indices --readFilesIn $file --outFileNamePrefix STAR/${file}_
+    STAR --runThreadN 6 --genomeDir indices --readFilesIn $file --outFileNamePrefix STAR/${file}_ --outSAMtype BAM SortedByCoordinate
 done
 
