@@ -1,2 +1,11 @@
-Same as 0RECORD in other RNA
+wget https://sra-downloadb.st-va.ncbi.nlm.nih.gov/sos2/sra-pub-run-4/SRR6729112/SRR6729112.1
+wget https://sra-downloadb.st-va.ncbi.nlm.nih.gov/sos2/sra-pub-run-4/SRR6729113/SRR6729113.1
+wget https://sra-downloadb.st-va.ncbi.nlm.nih.gov/sos2/sra-pub-run-4/SRR6729114/SRR6729114.1
+wget https://sra-downloadb.st-va.ncbi.nlm.nih.gov/sos2/sra-pub-run-4/SRR6729115/SRR6729115.1
+
+fastq-dump *
+fastqc *.fastq -t 6
+
+bash align.sh
 ../../../taynick/rnaSeq/subread-2.0.0-Linux-x86_64/bin/featureCounts -T 4 -s 2 -a ../Homo_sapiens.GRCh38.99.chr.gtf -o counts.tsv *.fastq_Aligned.out.sam
+
