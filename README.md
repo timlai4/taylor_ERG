@@ -31,19 +31,19 @@ create an index of the genome.
 ```{bash}
 mkdir indices
 mkdir STAR
-STAR --runThreadN 6 --runMode genomeGenerate --genomeFastaFiles hg38.fa --sjdbGTFfile Homo_sapiens.GRCh38.99.chr.gtf --genomeDir indices
+STAR --runThreadN 6 --runMode genomeGenerate --genomeFastaFiles hg38.fa --sjdbGTFfile Homo_sapiens.GRCh38.99.chr.gtf --genomeDir indices 
 ```
 With the index created, we can finally align our reads. Of course, this step requires the specific FASTQ file as input. Here, we document the general command
 ```{bash}
 files=($(ls *.fastq))
 for file in ${files[@]}
 do
-    STAR --runThreadN 6 --genomeDir indices --readFilesIn $file --outFileNamePrefix STAR/${file}_
+    STAR --runThreadN 6 --genomeDir indices --readFilesIn $file --outFileNamePrefix STAR/${file}_ --genomeDir indices --outSAMtype BAM SortedByCoordinate
 done
 ```
 The alignment output is in SAM format and we pass this into subreads to do the feature counting.
 ```{bash}
-featureCounts -T 6 -a ../Homo_sapiens.GRCh38.99.chr.gtf -o counts.tsv *.fastq_Aligned.out.sam --outSAMtype BAM SortedByCoordinate
+featureCounts -T 6 -s 2 -a ../Homo_sapiens.GRCh38.99.chr.gtf -o counts.tsv *.fastq_Aligned.out.sam 
 ```
 
 Subreads has an important parameter to set the strand-specific information
